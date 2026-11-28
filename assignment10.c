@@ -1,0 +1,63 @@
+#include <stdio.h>
+#include <time.h>
+
+// Function to get the day of the week for Jan 1st (0 = Sun, 1 = Mon, ..., 6 = Sat)
+int getFirstDayOfYear(int year) {
+    struct tm time_in = {0};
+    time_in.tm_year = year - 1900; // Years since 1900
+    time_in.tm_mon = 0;            // January
+    time_in.tm_mday = 1;           // 1st day
+
+    mktime(&time_in);              // Normalizes struct and populates tm_wday
+    return time_in.tm_wday;
+}
+
+int main() {
+    int year, startDay;
+    const char *months[] = {
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+    };
+    int daysInMonth[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+
+    printf("Enter year: ");
+    if (scanf("%d", &year) != 1 || year < 1900) {
+        printf("Invalid input. Please enter a year >= 1900.\n");
+        return 1;
+    }
+
+    // Check leap year and update February days
+    if ((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0)) {
+        daysInMonth[1] = 29;
+    }
+
+    startDay = getFirstDayOfYear(year);
+
+    printf("\n================ CALENDAR - %d ================\n", year);
+
+    for (int m = 0; m < 12; m++) {
+        printf("\n  ------------ %s ------------\n", months[m]);
+        printf("  Sun  Mon  Tue  Wed  Thu  Fri  Sat\n");
+
+        // Print leading spaces for the first week
+        for (int space = 0; space < startDay; space++) {
+            printf("     ");
+        }
+
+        // Print all days of the current month
+        for (int day = 1; day <= daysInMonth[m]; day++) {
+            printf("%5d", day);
+            startDay++;
+
+            if (startDay > 6) {
+                startDay = 0;
+                printf("\n");
+            }
+        }
+        printf("\n");
+    }
+
+    return 0;
+}
+    return 0;
+}
